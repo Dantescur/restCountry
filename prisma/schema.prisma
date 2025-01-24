@@ -1,0 +1,187 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// generator zod {
+//   provider = "zod-prisma-types"
+// }
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model borders {
+  id                                      Int        @id @default(autoincrement())
+  country_id                              Int
+  border_id                               Int?
+  countries_borders_border_idTocountries  countries? @relation("borders_border_idTocountries", fields: [border_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "borders_border_id_foreign")
+  countries_borders_country_idTocountries countries  @relation("borders_country_idTocountries", fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "borders_country_id_foreign")
+
+  @@index([border_id], map: "borders_border_id_index")
+  @@index([country_id], map: "borders_country_id_index")
+}
+
+model countries {
+  id                                    Int             @id @default(autoincrement())
+  name_common                           String          @db.VarChar(255)
+  name_official                         String          @db.VarChar(255)
+  cca2                                  String          @db.VarChar(255)
+  ccn3                                  String?         @db.VarChar(255)
+  cca3                                  String          @db.VarChar(255)
+  cioc                                  String?         @db.VarChar(255)
+  fifa                                  String?         @db.VarChar(255)
+  independent                           Boolean?
+  status                                String?         @db.VarChar(255)
+  un_member                             Boolean?
+  region                                String?         @db.VarChar(255)
+  subregion                             String?         @db.VarChar(255)
+  landlocked                            Boolean?
+  area                                  Float?          @db.Real
+  flag                                  String?         @db.VarChar(255)
+  population                            Int?
+  alt_spellings                         alt_spellings[]
+  borders_borders_border_idTocountries  borders[]       @relation("borders_border_idTocountries")
+  borders_borders_country_idTocountries borders[]       @relation("borders_country_idTocountries")
+  capitals                              capitals[]
+  car                                   car[]
+  continents                            continents[]
+  currencies                            currencies[]
+  demonyms                              demonyms[]
+  flags                                 flags[]
+  gini                                  gini[]
+  idd                                   idd[]
+  languages                             languages[]
+  latlng                                latlng[]
+  maps                                  maps[]
+  native_names                          native_names[]
+  timezones                             timezones[]
+  tld                                   tld[]
+  translations                          translations[]
+}
+
+model currencies {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  code       String?    @db.VarChar(255)
+  name       String?    @db.VarChar(255)
+  symbol     String?    @db.VarChar(255)
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "currencies_country_id_foreign")
+}
+
+model languages {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  code       String?    @db.VarChar(255)
+  name       String?    @db.VarChar(255)
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "languages_country_id_foreign")
+}
+
+model maps {
+  id               Int        @id @default(autoincrement())
+  country_id       Int?
+  google_maps      String?    @db.VarChar(255)
+  open_street_maps String?    @db.VarChar(255)
+  countries        countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "maps_country_id_foreign")
+}
+
+model timezones {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  timezone   String?    @db.VarChar(255)
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "timezones_country_id_foreign")
+}
+
+model translations {
+  id            Int        @id @default(autoincrement())
+  country_id    Int?
+  language_code String?    @db.VarChar(255)
+  official_name String?    @db.VarChar(255)
+  common_name   String?    @db.VarChar(255)
+  countries     countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "translations_country_id_foreign")
+}
+
+model alt_spellings {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  spelling   String     @db.VarChar(255)
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "alt_spellings_country_id_foreign")
+}
+
+model capitals {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  capital    String?    @db.VarChar(255)
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "capitals_country_id_foreign")
+}
+
+model car {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  side       String     @db.VarChar(255)
+  sign       String?    @db.VarChar(255)
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "car_country_id_foreign")
+}
+
+model continents {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  continent  String     @db.VarChar(255)
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "continents_country_id_foreign")
+}
+
+model demonyms {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  language   String     @db.VarChar(255)
+  gender     String?    @db.VarChar(255)
+  value      String?    @db.VarChar(255)
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "demonyms_country_id_foreign")
+}
+
+model flags {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  url        String?    @db.VarChar(255)
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "flags_country_id_foreign")
+}
+
+model gini {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  year       Int
+  value      Float      @db.Real
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "gini_country_id_foreign")
+}
+
+model idd {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  root       String     @db.VarChar(255)
+  suffix     String?    @db.VarChar(255)
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "idd_country_id_foreign")
+}
+
+model latlng {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  latitude   Float      @db.Real
+  longitude  Float      @db.Real
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "latlng_country_id_foreign")
+}
+
+model native_names {
+  id            Int        @id @default(autoincrement())
+  country_id    Int?
+  language_code String     @db.VarChar(255)
+  official_name String?    @db.VarChar(255)
+  common_name   String?    @db.VarChar(255)
+  countries     countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "native_names_country_id_foreign")
+}
+
+model tld {
+  id         Int        @id @default(autoincrement())
+  country_id Int?
+  domain     String     @db.VarChar(255)
+  countries  countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "tld_country_id_foreign")
+}
