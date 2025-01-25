@@ -2,10 +2,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// generator zod {
-//   provider = "zod-prisma-types"
-// }
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -26,7 +22,7 @@ model countries {
   id                                    Int             @id @default(autoincrement())
   name_common                           String          @db.VarChar(255)
   name_official                         String          @db.VarChar(255)
-  cca2                                  String          @db.VarChar(255)
+  cca2                                  String          @unique(map: "countries_unique") @db.VarChar(255)
   ccn3                                  String?         @db.VarChar(255)
   cca3                                  String          @db.VarChar(255)
   cioc                                  String?         @db.VarChar(255)
